@@ -3,8 +3,9 @@
 //
 
 #include <stdio.h>
+#include "../tests/include/unitTests.h"
 
 int main(int argc, const char *argv[]) {
-    printf("Hello World!");
+    runUnitTests();
     return 0;
 }
