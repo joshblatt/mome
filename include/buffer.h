@@ -19,16 +19,16 @@ typedef struct BufHdr {
     char buf[];
 } BufHdr;
 
-#define buf__hdr(b) ((BufHdr *)((char *)(b) - offsetof(BufHdr, buf)))
+#define _buf_hdr(b) ((BufHdr *)((char *)(b) - offsetof(BufHdr, buf)))
 
-#define buf_len(b) ((b) ? buf__hdr(b)->len : 0)
-#define buf_cap(b) ((b) ? buf__hdr(b)->cap : 0)
+#define buf_len(b) ((b) ? _buf_hdr(b)->len : 0)
+#define buf_cap(b) ((b) ? _buf_hdr(b)->cap : 0)
 #define buf_end(b) ((b) + buf_len(b))
 #define buf_sizeof(b) ((b) ? buf_len(b)*sizeof(*b) : 0)
 
-#define buf_free(b) ((b) ? (free(buf__hdr(b)), (b) = NULL) : 0)
+#define buf_free(b) ((b) ? (free(_buf_hdr(b)), (b) = NULL) : 0)
 #define buf_fit(b, n) ((n) <= buf_cap(b) ? 0 : ((b) = _buf_grow((b), (n), sizeof(*(b)))))
-#define buf_push(b, ...) (buf_fit((b), 1 + buf_len(b)), (b)[buf__hdr(b)->len++] = (__VA_ARGS__))
+#define buf_push(b, ...) (buf_fit((b), 1 + buf_len(b)), (b)[_buf_hdr(b)->len++] = (__VA_ARGS__))
 
 void *_buf_grow(const void *buf, size_t new_len, size_t elem_size) {
     assert(buf_cap(buf) <= (SIZE_MAX - 1)/2);
@@ -38,7 +38,7 @@ void *_buf_grow(const void *buf, size_t new_len, size_t elem_size) {
     size_t new_size = offsetof(BufHdr, buf) + new_cap*elem_size;
     BufHdr *new_hdr;
     if (buf) {
-        new_hdr = xrealloc(buf__hdr(buf), new_size);
+        new_hdr = xrealloc(_buf_hdr(buf), new_size);
     } else {
         new_hdr = xmalloc(new_size);
         new_hdr->len = 0;
