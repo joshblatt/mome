@@ -30,7 +30,7 @@ typedef struct BufHdr {
 #define buf_fit(b, n) ((n) <= buf_cap(b) ? 0 : ((b) = _buf_grow((b), (n), sizeof(*(b)))))
 #define buf_push(b, ...) (buf_fit((b), 1 + buf_len(b)), (b)[_buf_hdr(b)->len++] = (__VA_ARGS__))
 
-void *_buf_grow(const void *buf, size_t new_len, size_t elem_size) {
+static void *_buf_grow(const void *buf, size_t new_len, size_t elem_size) {
     assert(buf_cap(buf) <= (SIZE_MAX - 1)/2);
     size_t new_cap = MAX(16, MAX(1 + 2*buf_cap(buf), new_len));
     assert(new_len <= new_cap);

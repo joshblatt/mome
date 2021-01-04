@@ -12,6 +12,7 @@ add_executable(mome
         src/lexer.c
         tests/include/unitTests.h
         tests/include/test_buffer.h
+        tests/include/test_lexer.h
         tests/src/test_buffer.c
-        tests/src/unitTests.c
-        )
+        tests/src/test_lexer.c
+        tests/src/unitTests.c)
