@@ -153,7 +153,7 @@ typedef struct Token {
     TokenValue tokenValue;
 } Token;
 
-const char *keywords[] = {
+static const char *keywords[] = {
     [TYPEDEF] = "typedef",
     [ENUM] = "enum",
     [STRUCT] = "struct",
@@ -175,7 +175,7 @@ const char *keywords[] = {
     [DEFAULT] = "default"
 };
 
-const char *varTypes[] = {
+static const char *varTypes[] = {
     [INT] = "int",
     [INT8] = "int8",
     [INT16] = "int16",
@@ -193,7 +193,7 @@ const char *varTypes[] = {
     [NAME] = "name"
 };
 
-const char *operators[] = {
+static const char *operators[] = {
     [ADD] = "+",
     [SUB] = "-",
     [MULT] = "*",
@@ -201,7 +201,7 @@ const char *operators[] = {
     [MOD] = "%"
 };
 
-const char *assignments[] = {
+static const char *assignments[] = {
     [ASSIGN] = "=",
     [ADD_ASSIGN] = "+=",
     [SUB_ASSIGN] = "-=",
@@ -215,24 +215,24 @@ const char *assignments[] = {
     [RIGHT_SHIFT_ASSIGN] = ">>="
 };
 
-const char *punctuations[] = {
+static const char *punctuations[] = {
     [PERIOD] = ".",
     [COMMA] = ",",
     [COLON] = ":",
     [SEMI_COLON] = ";"
 };
 
-const char *locations[] = {
+static const char *locations[] = {
     [ADDRESS] = "&"
 };
 
-const char *logicalOperators[] = {
+static const char *logicalOperators[] = {
     [AND] = "&&",
     [OR] = "|",
     [NOT] = "!",
 };
 
-const char *bitOperators[] = {
+static const char *bitOperators[] = {
     [BIT_LEFT] = "<<",
     [BIT_RIGHT] = ">>",
     [BIT_AND] = "&",
@@ -241,7 +241,7 @@ const char *bitOperators[] = {
     [BIT_XOR] = "^"
 };
 
-const char *relationalOperators[] = {
+static const char *relationalOperators[] = {
     [EQUAL] = "==",
     [LESS] = "<",
     [GREATER] = ">",
@@ -250,18 +250,18 @@ const char *relationalOperators[] = {
     [GREATER_EQUAL] = ">="
 };
 
-const char *comments[] = {
+static const char *comments[] = {
     [SINGLE_LINE] = "//",
     [MULTI_LINE_OPEN] = "/*",
     [MULTI_LINE_CLOSE] = "*/"
 };
 
-const char *deferences[] = {
+static const char *deferences[] = {
     [STAR] = "*",
     [ARROW] = "->"
 };
 
-const char *brackets[] = {
+static const char *brackets[] = {
     [PARENTHESIS_OPEN] = "(",
     [PARENTHESIS_CLOSE] = ")",
     [BRACKET_OPEN] = "[",
@@ -269,5 +269,7 @@ const char *brackets[] = {
     [CURLY_BRACKET_OPEN] = "{",
     [CURLY_BRACKET_CLOSE] = "}"
 };
+
+Token *lexer();
 
 #endif //MOME_LEXER_H

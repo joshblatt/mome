@@ -3,9 +3,12 @@
 //
 
 #include <stdio.h>
+#include "../include/lexer.h"
 #include "../tests/include/unitTests.h"
+
 
 int main(int argc, const char *argv[]) {
     runUnitTests();
+    lexer();
     return 0;
 }
