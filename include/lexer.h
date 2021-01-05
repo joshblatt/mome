@@ -5,26 +5,8 @@
 #ifndef MOME_LEXER_H
 #define MOME_LEXER_H
 
-const char *typedef_keyword = "typedef";
-const char *enum_keyword = "enum";
-const char *struct_keyword = "struct";
-const char *union_keyword = "union";
-const char *var_keyword = "var";
-const char *const_keyword = "const";
-const char *func_keyword = "func";
-const char *sizeof_keyword = "sizeof";
-const char *break_keyword = "break";
-const char *continue_keyword = "continue";
-const char *return_keyword = "return";
-const char *if_keyword = "if";
-const char *else_keyword = "else";
-const char *while_keyword = "while";
-const char *do_keyword = "do";
-const char *for_keyword = "for";
-const char *switch_keyword = "switch";
-const char *case_keyword = "case";
-const char *default_keyword = "default";
-const char **keywords;
+#include <stdbool.h>
+#include <stdlib.h>
 
 void initKeywords ();
 
@@ -82,7 +64,12 @@ typedef enum Assignment {
     SUB_ASSIGN,
     MULT_ASSIGN,
     DIV_ASSIGN,
-    MOD_ASSIGN
+    MOD_ASSIGN,
+    AND_ASSIGN,
+    OR_ASSIGN,
+    XOR_ASSIGN,
+    LEFT_SHIFT_ASSIGN,
+    RIGHT_SHIFT_ASSIGN
 } Assignment;
 
 typedef enum Punctuation {
@@ -100,16 +87,25 @@ typedef enum LogicalOperator {
     AND,
     OR,
     NOT,
+} LogicalOperator;
+
+typedef enum BitOperator {
+    BIT_LEFT,
+    BIT_RIGHT,
     BIT_AND,
     BIT_OR,
     BIT_NOT,
     BIT_XOR
-} LogicalOperator;
+} BitOperator;
 
-typedef enum BitShift {
-    BIT_LEFT,
-    BIT_RIGHT
-} BitShift;
+typedef enum RelationalOperator {
+    EQUAL,
+    LESS,
+    GREATER,
+    NOT_EQUAL,
+    LESS_EQUAL,
+    GREATER_EQUAL
+} RelationalOperator;
 
 typedef enum Comment {
     SINGLE_LINE,
@@ -122,6 +118,15 @@ typedef enum Dereference {
     ARROW
 } Dereference;
 
+typedef enum Bracket {
+    PARENTHESIS_OPEN,
+    PARENTHESIS_CLOSE,
+    BRACKET_OPEN,
+    BRACKET_CLOSE,
+    CURLY_BRACKET_OPEN,
+    CURLY_BRACKET_CLOSE
+} Bracket;
+
 typedef union TokenType {
     Keyword keyword;
     VarType varType;
@@ -130,7 +135,8 @@ typedef union TokenType {
     Punctuation punctuation;
     Location location;
     LogicalOperator logicalOperator;
-    BitShift bitShift;
+    BitOperator bitOperator;
+    RelationalOperator relationalOperator;
     Comment comment;
     Dereference dereference;
 } TokenType;
