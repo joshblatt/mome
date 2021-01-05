@@ -9,6 +9,7 @@
 
 #include "../include/test_lexer.h"
 #include "../../include/buffer.h"
+#include "../../include/lexer.h"
 
 char *createFullDirFromRoot(char *dirFromRoot) {
     int dirSize = 1000;
@@ -36,11 +37,8 @@ char **readFile(char *dir, char **text) {
 void test_basic_lexer() {
     char **text = NULL;
     char *dir = createFullDirFromRoot("/tests/src/test_lexer_contents/basic_lexer.txt");
-    printf("%s\n", dir);
     text = readFile(dir, text);
-    for (int i = 0; i < buf_len(text); i++) {
-        printf("%s", text[i]);
-    }
+    Token *tokens = NULL;
 
     free(dir);
     for (int i = 0; i < buf_len(text); i++) {
