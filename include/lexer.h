@@ -151,7 +151,7 @@ typedef union TokenValue {
 typedef struct Token {
     TokenType type;
     TokenValue tokenValue;
-};
+} Token;
 
 const char *keywords[] = {
     [TYPEDEF] = "typedef",
