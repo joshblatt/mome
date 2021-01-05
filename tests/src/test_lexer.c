@@ -38,7 +38,7 @@ void test_basic_lexer() {
     char **text = NULL;
     char *dir = createFullDirFromRoot("/tests/src/test_lexer_contents/basic_lexer.txt");
     text = readFile(dir, text);
-    Token *tokens = NULL;
+    //Token *tokens = NULL;
 
     free(dir);
     for (int i = 0; i < buf_len(text); i++) {

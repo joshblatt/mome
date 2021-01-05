@@ -26,59 +26,127 @@ const char *case_keyword = "case";
 const char *default_keyword = "default";
 const char **keywords;
 
-typedef enum TokenKind {
-    TOKEN_EOF = 0,
-    // Reserve first 128 values for one-char tokens
-    TOKEN_LAST_CHAR = 127,
-    TOKEN_KEYWORD,
-    TOKEN_INT,
-    TOKEN_FLOAT,
-    TOKEN_STR,
-    TOKEN_NAME,
-    TOKEN_LSHIFT,
-    TOKEN_RSHIFT,
-    TOKEN_EQ,
-    TOKEN_NOTEQ,
-    TOKEN_LTEQ,
-    TOKEN_GTEQ,
-    TOKEN_AND,
-    TOKEN_OR,
-    TOKEN_INC,
-    TOKEN_DEC,
-    TOKEN_COLON_ASSIGN,
-    TOKEN_ADD_ASSIGN,
-    TOKEN_FIRST_ASSIGN = TOKEN_ADD_ASSIGN,
-    TOKEN_SUB_ASSIGN,
-    TOKEN_OR_ASSIGN,
-    TOKEN_AND_ASSIGN,
-    TOKEN_XOR_ASSIGN,
-    TOKEN_LSHIFT_ASSIGN,
-    TOKEN_RSHIFT_ASSIGN,
-    TOKEN_MUL_ASSIGN,
-    TOKEN_DIV_ASSIGN,
-    TOKEN_MOD_ASSIGN,
-    TOKEN_LAST_ASSIGN = TOKEN_MOD_ASSIGN,
-} TokenKind;
+void initKeywords ();
 
-typedef enum TokenMode {
-    TOKENMODE_NONE,
-    TOKENMODE_HEX,
-    TOKENMODE_BIN,
-    TOKENMODE_OCT,
-    TOKENMODE_CHAR,
-} TokenMode;
+typedef enum Keyword {
+    TYPEDEF,
+    ENUM,
+    STRUCT,
+    UNION,
+    VAR,
+    CONST,
+    FUNC,
+    SIZEOF,
+    BREAK,
+    CONTINUE,
+    RETURN,
+    IF,
+    ELSE,
+    WHILE,
+    DO,
+    FOR,
+    SWITCH,
+    CASE,
+    DEFAULT
+} Keyword;
+
+typedef enum VarType {
+    INT,
+    INT8,
+    INT16,
+    INT32,
+    INT64,
+    UINT,
+    UINT8,
+    UINT16,
+    UINT32,
+    UINT64,
+    DOUBLE,
+    STRING,
+    BOOL,
+    CHAR,
+    NAME
+} VarType;
+
+typedef enum Operator {
+    ADD,
+    SUB,
+    MULT,
+    DIV,
+    MOD
+} Operator;
+
+typedef enum Assignment {
+    ASSIGN,
+    ADD_ASSIGN,
+    SUB_ASSIGN,
+    MULT_ASSIGN,
+    DIV_ASSIGN,
+    MOD_ASSIGN
+} Assignment;
+
+typedef enum Punctuation {
+    PERIOD,
+    COMMA,
+    COLON,
+    SEMI_COLON
+} Punctuation;
+
+typedef enum Location {
+    ADDRESS
+} Location;
+
+typedef enum LogicalOperator {
+    AND,
+    OR,
+    NOT,
+    BIT_AND,
+    BIT_OR,
+    BIT_NOT,
+    BIT_XOR
+} LogicalOperator;
+
+typedef enum BitShift {
+    BIT_LEFT,
+    BIT_RIGHT
+} BitShift;
+
+typedef enum Comment {
+    SINGLE_LINE,
+    MULTI_LINE_OPEN,
+    MULTI_LINE_CLOSE
+} Comment;
+
+typedef enum Dereference {
+    STAR,
+    ARROW
+} Dereference;
+
+typedef union TokenType {
+    Keyword keyword;
+    VarType varType;
+    Operator operator;
+    Assignment assignment;
+    Punctuation punctuation;
+    Location location;
+    LogicalOperator logicalOperator;
+    BitShift bitShift;
+    Comment comment;
+    Dereference dereference;
+} TokenType;
+
+typedef union TokenValue {
+    int64_t signed_integer;
+    uint64_t unsigned_integer;
+    double decimal;
+    const char *string;
+    const char *name;
+    bool boolean;
+} TokenValue;
 
 typedef struct Token {
-    TokenKind kind;
-    TokenMode mode;
-    const char *start;
-    const char *end;
-    union {
-        int64_t int_val;
-        double float_val;
-        const char *str_val;
-        const char *name;
-    };
-} Token;
+    TokenType type;
+    TokenValue tokenValue;
+};
 
 #endif //MOME_LEXER_H
