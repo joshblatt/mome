@@ -37,11 +37,16 @@ Token *lexer() {
     char **text = NULL;
     char *dir = createFullDirFromRoot("/tests/src/test_lexer_contents/basic_lexer.txt");
     text = readFile(dir, text);
-    for (int i = 0; i < buf_len(text); i++) {
-        printf("%s", text[i]);
-    }
-    Token *token = NULL;
 
+    Token *token = NULL;
+    int numLines = buf_len(text);
+    for (int line = 0; line < buf_len(text); line++) {
+        for (int charIndex = 0; charIndex < strlen(text[line]); charIndex++) {
+            printf("%c", text[line][charIndex]);
+        }
+    }
+
+    // Memory cleanup
     for (int i = 0; i < buf_len(text); i++) {
         free(text[i]);
     }
