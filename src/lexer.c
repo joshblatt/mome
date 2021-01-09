@@ -33,6 +33,21 @@ char **readFile(char *dir, char **text) {
     return text;
 }
 
+char *readUntilSpace(char *line, char *word) {
+    char *tempWord = NULL;
+    char *curChar = line;
+    while (*curChar != '\n' && *curChar != ' ') {
+        strncat(tempWord, curChar, 1);
+        curChar++;
+    }
+    if (*curChar == ' ') {
+        curChar++;
+    }
+    word = (char *)malloc(sizeof(char) * strlen(tempWord));
+    strcpy(word, tempWord);
+    return curChar;
+}
+
 Token *lexer() {
     char **text = NULL;
     char *dir = createFullDirFromRoot("/tests/src/test_lexer_contents/basic_lexer.txt");
@@ -40,10 +55,21 @@ Token *lexer() {
 
     Token *token = NULL;
     int numLines = buf_len(text);
+    char **words = NULL;
     for (int line = 0; line < buf_len(text); line++) {
-        for (int charIndex = 0; charIndex < strlen(text[line]); charIndex++) {
-            printf("%c", text[line][charIndex]);
-        }
+//        for (int charIndex = 0; charIndex < strlen(text[line]); charIndex++) {
+//            printf("%c", text[line][charIndex]);
+//        }
+        char *index = NULL;
+        Token *token = NULL;
+        char *word = NULL;
+        do {
+            index = readUntilSpace(text[line], word);
+            buf_push(words, word);
+        } while (*index != NULL);
+
+
+
     }
 
     // Memory cleanup
