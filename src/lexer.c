@@ -39,15 +39,12 @@ Token *lexer() {
     char *dir = createFullDirFromRoot("/tests/src/test_lexer_contents/basic_lexer.txt");
     text = readFile(dir, text);
 
-    Token *token = NULL;
-    int numLines = buf_len(text);
-    char **words = NULL;
+    Token *tokens = NULL;
     char *curWord = NULL;
+
     for (int line = 0; line < buf_len(text); line++) {
         for (int charIndex = 0; charIndex < strlen(text[line]); charIndex++) {
-            if (!isspace(text[line][charIndex])) {
-                strncat(curWord, &text[line][charIndex], 1); // Copy character into word
-            } else if (text[line][charIndex] == ' ') {
+            if (text[line][charIndex] == ' ') {
                 //is there an unmatched quotation mark before?
                     //if so, keep reading (since string is ongoing)
 
@@ -60,6 +57,8 @@ Token *lexer() {
             } else if (text[line][charIndex] == '\n') {
                 //is there an unmatched quotation mark?
                     //if so, keep reading (since it is part of string)
+            } else {
+                strncat(curWord, &text[line][charIndex], 1); // Copy character into word
             }
 
             //
@@ -73,5 +72,5 @@ Token *lexer() {
     }
     buf_free(text);
     free(dir);
-    return token;
+    return tokens;
 }

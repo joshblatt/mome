@@ -62,14 +62,8 @@ typedef enum Symbol {
     XOR_ASSIGN,
     LEFT_SHIFT_ASSIGN,
     RIGHT_SHIFT_ASSIGN,
-    PERIOD,
-    COMMA,
-    COLON,
-    SEMI_COLON,
-    ADDRESS,
     AND,
     OR,
-    NOT,
     BIT_LEFT,
     BIT_RIGHT,
     BIT_AND,
@@ -82,6 +76,16 @@ typedef enum Symbol {
     NOT_EQUAL,
     LESS_EQUAL,
     GREATER_EQUAL,
+} Symbol;
+
+// A symbol that does not require a space in front of it
+typedef enum SpecialSymbol {
+    PERIOD,
+    COMMA,
+    COLON,
+    SEMI_COLON,
+    ADDRESS,
+    NOT,
     SINGLE_LINE,
     MULTI_LINE_OPEN,
     MULTI_LINE_CLOSE,
@@ -93,7 +97,7 @@ typedef enum Symbol {
     BRACKET_CLOSE,
     CURLY_BRACKET_OPEN,
     CURLY_BRACKET_CLOSE
-} Symbol;
+} SpecialSymbol;
 
 static const char *keywords[] = {
     [TYPEDEF] = "typedef",
@@ -149,14 +153,8 @@ static const char *symbols[] = {
     [XOR_ASSIGN] = "^=",
     [LEFT_SHIFT_ASSIGN] = "<<=",
     [RIGHT_SHIFT_ASSIGN] = ">>=",
-    [PERIOD] = ".",
-    [COMMA] = ",",
-    [COLON] = ":",
-    [SEMI_COLON] = ";",
-    [ADDRESS] = "$", // choosing $ to not confuse with bitwise and
     [AND] = "&&",
     [OR] = "|",
-    [NOT] = "!",
     [BIT_LEFT] = "<<",
     [BIT_RIGHT] = ">>",
     [BIT_AND] = "&",
@@ -168,7 +166,16 @@ static const char *symbols[] = {
     [GREATER] = ">",
     [NOT_EQUAL] = "!=",
     [LESS_EQUAL] = "<=",
-    [GREATER_EQUAL] = ">=",
+    [GREATER_EQUAL] = ">="
+};
+
+static const char *specialSymbols[] = {
+    [PERIOD] = ".",
+    [COMMA] = ",",
+    [COLON] = ":",
+    [SEMI_COLON] = ";",
+    [ADDRESS] = "$", // choosing $ to not confuse with bitwise and
+    [NOT] = "!",
     [SINGLE_LINE] = "//",
     [MULTI_LINE_OPEN] = "/*",
     [MULTI_LINE_CLOSE] = "*/",
@@ -185,6 +192,7 @@ static const char *symbols[] = {
 typedef union TokenType {
     Keyword keyword;
     Symbol symbol;
+    SpecialSymbol specialSymbol;
 } TokenType;
 
 typedef union TokenValue {
