@@ -27,10 +27,7 @@ typedef enum Keyword {
     FOR,
     SWITCH,
     CASE,
-    DEFAULT
-} Keyword;
-
-typedef enum VarType {
+    DEFAULT,
     INT,
     INT8,
     INT16,
@@ -46,17 +43,14 @@ typedef enum VarType {
     BOOL,
     CHAR,
     NAME
-} VarType;
+} Keyword;
 
-typedef enum Operator {
+typedef enum Symbol {
     ADD,
     SUB,
     MULT,
     DIV,
-    MOD
-} Operator;
-
-typedef enum Assignment {
+    MOD,
     ASSIGN,
     ADD_ASSIGN,
     SUB_ASSIGN,
@@ -67,91 +61,39 @@ typedef enum Assignment {
     OR_ASSIGN,
     XOR_ASSIGN,
     LEFT_SHIFT_ASSIGN,
-    RIGHT_SHIFT_ASSIGN
-} Assignment;
-
-typedef enum Punctuation {
+    RIGHT_SHIFT_ASSIGN,
     PERIOD,
     COMMA,
     COLON,
-    SEMI_COLON
-} Punctuation;
-
-typedef enum Location {
-    ADDRESS
-} Location;
-
-typedef enum LogicalOperator {
+    SEMI_COLON,
+    ADDRESS,
     AND,
     OR,
     NOT,
-} LogicalOperator;
-
-typedef enum BitOperator {
     BIT_LEFT,
     BIT_RIGHT,
     BIT_AND,
     BIT_OR,
     BIT_NOT,
-    BIT_XOR
-} BitOperator;
-
-typedef enum RelationalOperator {
+    BIT_XOR,
     EQUAL,
     LESS,
     GREATER,
     NOT_EQUAL,
     LESS_EQUAL,
-    GREATER_EQUAL
-} RelationalOperator;
-
-typedef enum Comment {
+    GREATER_EQUAL,
     SINGLE_LINE,
     MULTI_LINE_OPEN,
-    MULTI_LINE_CLOSE
-} Comment;
-
-typedef enum Dereference {
+    MULTI_LINE_CLOSE,
     STAR,
-    ARROW
-} Dereference;
-
-typedef enum Bracket {
+    ARROW,
     PARENTHESIS_OPEN,
     PARENTHESIS_CLOSE,
     BRACKET_OPEN,
     BRACKET_CLOSE,
     CURLY_BRACKET_OPEN,
     CURLY_BRACKET_CLOSE
-} Bracket;
-
-typedef union TokenType {
-    Keyword keyword;
-    VarType varType;
-    Operator operator;
-    Assignment assignment;
-    Punctuation punctuation;
-    Location location;
-    LogicalOperator logicalOperator;
-    BitOperator bitOperator;
-    RelationalOperator relationalOperator;
-    Comment comment;
-    Dereference dereference;
-} TokenType;
-
-typedef union TokenValue {
-    int64_t signed_integer;
-    uint64_t unsigned_integer;
-    double decimal;
-    const char *string;
-    const char *name;
-    bool boolean;
-} TokenValue;
-
-typedef struct Token {
-    TokenType type;
-    TokenValue tokenValue;
-} Token;
+} Symbol;
 
 static const char *keywords[] = {
     [TYPEDEF] = "typedef",
@@ -172,10 +114,7 @@ static const char *keywords[] = {
     [FOR] = "for",
     [SWITCH] = "switch",
     [CASE] = "case",
-    [DEFAULT] = "default"
-};
-
-static const char *varTypes[] = {
+    [DEFAULT] = "default",
     [INT] = "int",
     [INT8] = "int8",
     [INT16] = "int16",
@@ -193,15 +132,12 @@ static const char *varTypes[] = {
     [NAME] = "name"
 };
 
-static const char *operators[] = {
+static const char *symbols[] = {
     [ADD] = "+",
     [SUB] = "-",
     [MULT] = "*",
     [DIV] = "/",
-    [MOD] = "%"
-};
-
-static const char *assignments[] = {
+    [MOD] = "%",
     [ASSIGN] = "=",
     [ADD_ASSIGN] = "+=",
     [SUB_ASSIGN] = "-=",
@@ -212,56 +148,32 @@ static const char *assignments[] = {
     [OR_ASSIGN] = "|=",
     [XOR_ASSIGN] = "^=",
     [LEFT_SHIFT_ASSIGN] = "<<=",
-    [RIGHT_SHIFT_ASSIGN] = ">>="
-};
-
-static const char *punctuations[] = {
+    [RIGHT_SHIFT_ASSIGN] = ">>=",
     [PERIOD] = ".",
     [COMMA] = ",",
     [COLON] = ":",
-    [SEMI_COLON] = ";"
-};
-
-static const char *locations[] = {
-    [ADDRESS] = "&"
-};
-
-static const char *logicalOperators[] = {
+    [SEMI_COLON] = ";",
+    [ADDRESS] = "$", // choosing $ to not confuse with bitwise and
     [AND] = "&&",
     [OR] = "|",
     [NOT] = "!",
-};
-
-static const char *bitOperators[] = {
     [BIT_LEFT] = "<<",
     [BIT_RIGHT] = ">>",
     [BIT_AND] = "&",
     [BIT_OR] = "|",
     [BIT_NOT] = "~",
-    [BIT_XOR] = "^"
-};
-
-static const char *relationalOperators[] = {
+    [BIT_XOR] = "^",
     [EQUAL] = "==",
     [LESS] = "<",
     [GREATER] = ">",
     [NOT_EQUAL] = "!=",
     [LESS_EQUAL] = "<=",
-    [GREATER_EQUAL] = ">="
-};
-
-static const char *comments[] = {
+    [GREATER_EQUAL] = ">=",
     [SINGLE_LINE] = "//",
     [MULTI_LINE_OPEN] = "/*",
-    [MULTI_LINE_CLOSE] = "*/"
-};
-
-static const char *deferences[] = {
+    [MULTI_LINE_CLOSE] = "*/",
     [STAR] = "*",
-    [ARROW] = "->"
-};
-
-static const char *brackets[] = {
+    [ARROW] = "->",
     [PARENTHESIS_OPEN] = "(",
     [PARENTHESIS_CLOSE] = ")",
     [BRACKET_OPEN] = "[",
@@ -269,6 +181,25 @@ static const char *brackets[] = {
     [CURLY_BRACKET_OPEN] = "{",
     [CURLY_BRACKET_CLOSE] = "}"
 };
+
+typedef union TokenType {
+    Keyword keyword;
+    Symbol symbol;
+} TokenType;
+
+typedef union TokenValue {
+    int64_t signed_integer;
+    uint64_t unsigned_integer;
+    double decimal;
+    const char *string;
+    const char *name;
+    bool boolean;
+} TokenValue;
+
+typedef struct Token {
+    TokenType type;
+    TokenValue tokenValue;
+} Token;
 
 Token *lexer();
 
