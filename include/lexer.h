@@ -42,7 +42,8 @@ typedef enum Keyword {
     STRING,
     BOOL,
     CHAR,
-    NAME
+    NAME,
+    NUM_KEYWORDS
 } Keyword;
 
 typedef enum Symbol {
@@ -76,6 +77,10 @@ typedef enum Symbol {
     NOT_EQUAL,
     LESS_EQUAL,
     GREATER_EQUAL,
+    SINGLE_LINE,
+    MULTI_LINE_OPEN,
+    MULTI_LINE_CLOSE,
+    NUM_SYMBOLS
 } Symbol;
 
 // A symbol that does not require a space in front of it
@@ -86,9 +91,6 @@ typedef enum SpecialSymbol {
     SEMI_COLON,
     ADDRESS,
     NOT,
-    SINGLE_LINE,
-    MULTI_LINE_OPEN,
-    MULTI_LINE_CLOSE,
     STAR,
     ARROW,
     PARENTHESIS_OPEN,
@@ -96,7 +98,8 @@ typedef enum SpecialSymbol {
     BRACKET_OPEN,
     BRACKET_CLOSE,
     CURLY_BRACKET_OPEN,
-    CURLY_BRACKET_CLOSE
+    CURLY_BRACKET_CLOSE,
+    NUM_SPECIAL_SYMBOLS
 } SpecialSymbol;
 
 static const char *keywords[] = {
@@ -166,27 +169,27 @@ static const char *symbols[] = {
     [GREATER] = ">",
     [NOT_EQUAL] = "!=",
     [LESS_EQUAL] = "<=",
-    [GREATER_EQUAL] = ">="
-};
-
-static const char *specialSymbols[] = {
-    [PERIOD] = ".",
-    [COMMA] = ",",
-    [COLON] = ":",
-    [SEMI_COLON] = ";",
-    [ADDRESS] = "$", // choosing $ to not confuse with bitwise and
-    [NOT] = "!",
+    [GREATER_EQUAL] = ">=",
     [SINGLE_LINE] = "//",
     [MULTI_LINE_OPEN] = "/*",
     [MULTI_LINE_CLOSE] = "*/",
-    [STAR] = "*",
-    [ARROW] = "->",
-    [PARENTHESIS_OPEN] = "(",
-    [PARENTHESIS_CLOSE] = ")",
-    [BRACKET_OPEN] = "[",
-    [BRACKET_CLOSE] = "]",
-    [CURLY_BRACKET_OPEN] = "{",
-    [CURLY_BRACKET_CLOSE] = "}"
+};
+
+static const char specialSymbols[] = {
+    [PERIOD] = '.',
+    [COMMA] = ',',
+    [COLON] = ':',
+    [SEMI_COLON] = ';',
+    [ADDRESS] = '$', // choosing $ to not confuse with bitwise and
+    [NOT] = '!',
+    [STAR] = '*',
+    [ARROW] = '#',
+    [PARENTHESIS_OPEN] = '(',
+    [PARENTHESIS_CLOSE] = ')',
+    [BRACKET_OPEN] = '[',
+    [BRACKET_CLOSE] = ']',
+    [CURLY_BRACKET_OPEN] = '{',
+    [CURLY_BRACKET_CLOSE] = '}'
 };
 
 typedef union TokenType {

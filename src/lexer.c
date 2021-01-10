@@ -3,7 +3,6 @@
 //
 
 #include <assert.h>
-#include <ctype.h>
 #include "stdio.h"
 #include <string.h>
 #include <unistd.h>
@@ -34,6 +33,15 @@ char **readFile(char *dir, char **text) {
     return text;
 }
 
+bool isSpecialCharacter(char c) {
+    for (int i = 0; i < NUM_SPECIAL_SYMBOLS; i++) {
+        if (c == specialSymbols[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 Token *lexer() {
     char **text = NULL;
     char *dir = createFullDirFromRoot("/tests/src/test_lexer_contents/basic_lexer.txt");
@@ -57,8 +65,12 @@ Token *lexer() {
             } else if (text[line][charIndex] == '\n') {
                 //is there an unmatched quotation mark?
                     //if so, keep reading (since it is part of string)
-            } else {
-                strncat(curWord, &text[line][charIndex], 1); // Copy character into word
+            } else if (isSpecialCharacter(text[line][charIndex])) {
+                // special behaviour
+            }
+            else {
+                buf_push(curWord, text[line][charIndex]); // push letter into word
+                //strncat(curWord, &text[line][charIndex], 1); // Copy character into word
             }
 
             //
