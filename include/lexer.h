@@ -43,7 +43,9 @@ typedef enum Keyword {
     BOOL,
     CHAR,
     NAME,
-    NUM_KEYWORDS
+
+    NUM_KEYWORDS,
+    NOT_KEYWORD
 } Keyword;
 
 typedef enum Symbol {
@@ -80,7 +82,9 @@ typedef enum Symbol {
     SINGLE_LINE,
     MULTI_LINE_OPEN,
     MULTI_LINE_CLOSE,
-    NUM_SYMBOLS
+
+    NUM_SYMBOLS,
+    NOT_SYMBOL
 } Symbol;
 
 // A symbol that does not require a space in front of it
@@ -99,7 +103,11 @@ typedef enum SpecialSymbol {
     BRACKET_CLOSE,
     CURLY_BRACKET_OPEN,
     CURLY_BRACKET_CLOSE,
-    NUM_SPECIAL_SYMBOLS
+    QUOTATION,
+    APOSTROPHE,
+
+    NUM_SPECIAL_SYMBOLS,
+    NOT_SPECIAL_SYMBOL
 } SpecialSymbol;
 
 static const char *keywords[] = {
@@ -183,13 +191,15 @@ static const char specialSymbols[] = {
     [ADDRESS] = '$', // choosing $ to not confuse with bitwise and
     [NOT] = '!',
     [STAR] = '*',
-    [ARROW] = '#',
+    [ARROW] = '#', // not actually an arrow, but makes isSpecialCharacter function easier
     [PARENTHESIS_OPEN] = '(',
     [PARENTHESIS_CLOSE] = ')',
     [BRACKET_OPEN] = '[',
     [BRACKET_CLOSE] = ']',
     [CURLY_BRACKET_OPEN] = '{',
-    [CURLY_BRACKET_CLOSE] = '}'
+    [CURLY_BRACKET_CLOSE] = '}',
+    [QUOTATION] = '"',
+    [APOSTROPHE] = '\''
 };
 
 typedef union TokenType {
@@ -212,6 +222,6 @@ typedef struct Token {
     TokenValue tokenValue;
 } Token;
 
-Token *lexer();
+Token **lexer();
 
 #endif //MOME_LEXER_H

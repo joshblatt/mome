@@ -23,14 +23,23 @@ char **readFile(char *dir, char **text) {
     file = fopen(dir, "r");
     assert(file != NULL);
     // line can be 1000 characters
-    char *line = malloc(sizeof(char) * 1000);
+    char *line = (char *)xmalloc(sizeof(char) * 1000);
     while(fgets(line, 1000, file) != NULL) {
         buf_push(text, line);
-        line = malloc(sizeof(char) * 1000);
+        line = (char *)malloc(sizeof(char) * 1000);
     }
     free(line);
     fclose(file);
     return text;
+}
+
+Keyword isKeyword(char *word) {
+    for (int i = 0; i < NUM_KEYWORDS; i++) {
+        if (strcmp(word, keywords[i]) == 0) {
+            return i;
+        }
+    }
+    return NOT_KEYWORD;
 }
 
 bool isSpecialCharacter(char c) {
@@ -42,19 +51,32 @@ bool isSpecialCharacter(char c) {
     return false;
 }
 
-Token *lexer() {
+Token **lexer() {
     char **text = NULL;
     char *dir = createFullDirFromRoot("/tests/src/test_lexer_contents/basic_lexer.txt");
     text = readFile(dir, text);
 
-    Token *tokens = NULL;
+    Token **tokens = NULL;
+    Token *token = NULL;
     char *curWord = NULL;
 
     for (int line = 0; line < buf_len(text); line++) {
         for (int charIndex = 0; charIndex < strlen(text[line]); charIndex++) {
+            bool unmatchedQuotation = false;
             if (text[line][charIndex] == ' ') {
                 //is there an unmatched quotation mark before?
-                    //if so, keep reading (since string is ongoing)
+                //if so, keep reading (since string is ongoing)
+                if (unmatchedQuotation) {
+                    buf_push(curWord, ' ');
+                    continue;
+                }
+                Keyword keyword = isKeyword(curWord);
+                if (keyword != NOT_KEYWORD) {
+                    token = (Token *)xmalloc(sizeof(Token));
+                    token->type.keyword = keyword;
+                    buf_push(tokens, token);
+                }
+
 
                 //do keyword processing of word
                 //if keyword -> make token
@@ -66,7 +88,11 @@ Token *lexer() {
                 //is there an unmatched quotation mark?
                     //if so, keep reading (since it is part of string)
             } else if (isSpecialCharacter(text[line][charIndex])) {
-                // special behaviour
+                // does symbol come after variable?
+                    //if so, create token for variable and create token for symbol
+                    //if not, create token for symbol
+
+                // if quotation mark, unmatchedQuotation = !unmatchedQuotation
             }
             else {
                 buf_push(curWord, text[line][charIndex]); // push letter into word
