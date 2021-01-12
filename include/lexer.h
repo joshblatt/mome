@@ -219,7 +219,7 @@ typedef union TokenValue {
 
 typedef struct Token {
     TokenType type;
-    TokenValue tokenValue;
+    TokenValue value;
 } Token;
 
 Token **lexer();

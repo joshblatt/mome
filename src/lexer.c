@@ -3,6 +3,7 @@
 //
 
 #include <assert.h>
+#include <ctype.h>
 #include "stdio.h"
 #include <string.h>
 #include <unistd.h>
@@ -33,6 +34,37 @@ char **readFile(char *dir, char **text) {
     return text;
 }
 
+typedef enum Number {
+    INTEGER,
+    FLOAT,
+    NOT_NUMBER
+} Number;
+
+Number isNumber(char *word) {
+    Number number;
+    bool periodSeen = false;
+    for (int i = 0; i < strlen(word); i++) {
+        if (!isdigit(word[i]) && word[i] != '.') {
+            return NOT_NUMBER;
+        } else if (!periodSeen && word[i] == '.') {
+            if (i == (strlen(word) - 1)) {
+                // TODO throw error and delete this
+                return NOT_NUMBER;
+            } else {
+                number = FLOAT;
+                periodSeen = true;
+            }
+        } else if (periodSeen && word[i] == '.') {
+            // TODO throw error and delete this
+            return NOT_NUMBER;
+        } // else it is a number and the loop can continue
+    }
+    if (!periodSeen) {
+        number = INT;
+    }
+    return number;
+}
+
 Keyword isKeyword(char *word) {
     for (int i = 0; i < NUM_KEYWORDS; i++) {
         if (strcmp(word, keywords[i]) == 0) {
@@ -42,13 +74,22 @@ Keyword isKeyword(char *word) {
     return NOT_KEYWORD;
 }
 
-bool isSpecialCharacter(char c) {
-    for (int i = 0; i < NUM_SPECIAL_SYMBOLS; i++) {
-        if (c == specialSymbols[i]) {
-            return true;
+Symbol isSymbol(char *word) {
+    for (int i = 0; i < NUM_SYMBOLS; i++) {
+        if (strcmp(word, keywords[i]) == 0) {
+            return i;
         }
     }
-    return false;
+    return NOT_SYMBOL;
+}
+
+SpecialSymbol isSpecialSymbol(char c) {
+    for (int i = 0; i < NUM_SPECIAL_SYMBOLS; i++) {
+        if (c == specialSymbols[i]) {
+            return i;
+        }
+    }
+    return NOT_SPECIAL_SYMBOL;
 }
 
 Token **lexer() {
@@ -71,30 +112,34 @@ Token **lexer() {
                     continue;
                 }
                 Keyword keyword = isKeyword(curWord);
+                Symbol symbol = isSymbol(curWord);
+                Number number = isNumber(curWord);
+                token = (Token *)xmalloc(sizeof(Token));
                 if (keyword != NOT_KEYWORD) {
-                    token = (Token *)xmalloc(sizeof(Token));
                     token->type.keyword = keyword;
-                    buf_push(tokens, token);
+                } else if (symbol != NOT_SYMBOL) {
+                    token->type.symbol = symbol;
+                } else if (number != NOT_NUMBER) {
+                    if (number == INTEGER) {
+                        token->value.unsigned_integer = atoi(curWord);
+                    } else { //float
+                        token->value.decimal = atof(curWord);
+                    }
+                } else {
+                    // if its not a keyword, symbol, orn number, it must be a name
+                    token->value.string = curWord;
                 }
-
-
-                //do keyword processing of word
-                //if keyword -> make token
-                //else if operator -> make token
-                //else if special character -> make token
-                //else if name -> make name token
-                //
+                buf_push(tokens, token);
             } else if (text[line][charIndex] == '\n') {
                 //is there an unmatched quotation mark?
                     //if so, keep reading (since it is part of string)
-            } else if (isSpecialCharacter(text[line][charIndex])) {
+            } else if (isSpecialSymbol(text[line][charIndex])) {
                 // does symbol come after variable?
                     //if so, create token for variable and create token for symbol
                     //if not, create token for symbol
 
                 // if quotation mark, unmatchedQuotation = !unmatchedQuotation
-            }
-            else {
+            } else {
                 buf_push(curWord, text[line][charIndex]); // push letter into word
                 //strncat(curWord, &text[line][charIndex], 1); // Copy character into word
             }
