@@ -104,7 +104,8 @@ Token **lexer() {
     for (int line = 0; line < buf_len(text); line++) {
         for (int charIndex = 0; charIndex < strlen(text[line]); charIndex++) {
             bool unmatchedQuotation = false;
-            if (text[line][charIndex] == ' ') {
+            SpecialSymbol specialSymbol = isSpecialSymbol(text[line][charIndex]);
+            if (text[line][charIndex] == ' ' || text[line][charIndex] == '\n') {
                 //is there an unmatched quotation mark before?
                 //if so, keep reading (since string is ongoing)
                 if (unmatchedQuotation) {
@@ -130,19 +131,29 @@ Token **lexer() {
                     token->value.string = curWord;
                 }
                 buf_push(tokens, token);
-                free(curWord);
-                buf_free(curWord);
-            } else if (text[line][charIndex] == '\n') {
-                if (unmatchedQuotation) {
-                    buf_push(curWord, '\n');
-                    continue;
+                curWord = NULL; // reset curWord
+            } else if (specialSymbol != NOT_SPECIAL_SYMBOL) {
+                if (text[line][charIndex] == specialSymbols[QUOTATION] && unmatchedQuotation) {
+                    token = (Token *)xmalloc(sizeof(Token));
+                    token->value.string = curWord;
+                    buf_push(tokens, token);
+                    token = (Token *)xmalloc(sizeof(Token));
+                    token->type.specialSymbol = QUOTATION;
+                    buf_push(tokens, token);
+                    unmatchedQuotation = false;
+                } else if (text[line][charIndex] == specialSymbols[QUOTATION] && !unmatchedQuotation) {
+                    token = (Token *)xmalloc(sizeof(Token));
+                    token->type.specialSymbol = QUOTATION;
+                    buf_push(tokens, token);
+                    unmatchedQuotation = true;
+                } else {
+                    token = (Token *)xmalloc(sizeof(Token));
+                    token->value.string = curWord;
+                    buf_push(tokens, token);
+                    token = (Token *)xmalloc(sizeof(Token));
+                    token->type.specialSymbol = specialSymbol;
+                    buf_push(tokens, token);
                 }
-                //is there an unmatched quotation mark?
-                    //if so, keep reading (since it is part of string)
-            } else if (isSpecialSymbol(text[line][charIndex]) != NOT_SPECIAL_SYMBOL) {
-                // does symbol come after variable?
-                    //if so, create token for variable and create token for symbol
-                    //if not, create token for symbol
 
                 // if quotation mark, unmatchedQuotation = !unmatchedQuotation
             } else {
