@@ -126,14 +126,20 @@ Token **lexer() {
                         token->value.decimal = atof(curWord);
                     }
                 } else {
-                    // if its not a keyword, symbol, orn number, it must be a name
+                    // if its not a keyword, symbol, or number, it must be a name
                     token->value.string = curWord;
                 }
                 buf_push(tokens, token);
+                free(curWord);
+                buf_free(curWord);
             } else if (text[line][charIndex] == '\n') {
+                if (unmatchedQuotation) {
+                    buf_push(curWord, '\n');
+                    continue;
+                }
                 //is there an unmatched quotation mark?
                     //if so, keep reading (since it is part of string)
-            } else if (isSpecialSymbol(text[line][charIndex])) {
+            } else if (isSpecialSymbol(text[line][charIndex]) != NOT_SPECIAL_SYMBOL) {
                 // does symbol come after variable?
                     //if so, create token for variable and create token for symbol
                     //if not, create token for symbol
