@@ -102,8 +102,8 @@ Token **lexer() {
     char *curWord = NULL;
 
     for (int line = 0; line < buf_len(text); line++) {
+        bool unmatchedQuotation = false;
         for (int charIndex = 0; charIndex < strlen(text[line]); charIndex++) {
-            bool unmatchedQuotation = false;
             SpecialSymbol specialSymbol = isSpecialSymbol(text[line][charIndex]);
             if (text[line][charIndex] == ' ' || text[line][charIndex] == '\n') {
                 //is there an unmatched quotation mark before?
@@ -154,15 +154,10 @@ Token **lexer() {
                     token->type.specialSymbol = specialSymbol;
                     buf_push(tokens, token);
                 }
-
-                // if quotation mark, unmatchedQuotation = !unmatchedQuotation
+                curWord = NULL;
             } else {
                 buf_push(curWord, text[line][charIndex]); // push letter into word
-                //strncat(curWord, &text[line][charIndex], 1); // Copy character into word
             }
-
-            //
-            //printf("%c", text[line][charIndex]);
         }
     }
 
