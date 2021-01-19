@@ -217,7 +217,7 @@ typedef union TokenValue {
     bool boolean;
 } TokenValue;
 
-typedef struct Token {
+typedef union Token {
     TokenType type;
     TokenValue value;
 } Token;

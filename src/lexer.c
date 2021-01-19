@@ -66,6 +66,9 @@ Number isNumber(char *word) {
 }
 
 Keyword isKeyword(char *word) {
+    if (word == NULL) {
+        return NOT_KEYWORD;
+    }
     for (int i = 0; i < NUM_KEYWORDS; i++) {
         if (strcmp(word, keywords[i]) == 0) {
             return i;
@@ -75,8 +78,11 @@ Keyword isKeyword(char *word) {
 }
 
 Symbol isSymbol(char *word) {
+    if (word == NULL) {
+        return NOT_SYMBOL;
+    }
     for (int i = 0; i < NUM_SYMBOLS; i++) {
-        if (strcmp(word, keywords[i]) == 0) {
+        if (strcmp(word, symbols[i]) == 0) {
             return i;
         }
     }
