@@ -42,7 +42,6 @@ typedef enum Keyword {
     STRING,
     BOOL,
     CHAR,
-    NAME,
 
     NUM_KEYWORDS,
     NOT_KEYWORD
@@ -143,8 +142,7 @@ static const char *keywords[] = {
     [DOUBLE] = "double",
     [STRING] = "string",
     [BOOL] = "bool",
-    [CHAR] = "char",
-    [NAME] = "name"
+    [CHAR] = "char"
 };
 
 static const char *symbols[] = {
@@ -202,24 +200,54 @@ static const char specialSymbols[] = {
     [APOSTROPHE] = '\''
 };
 
-typedef union TokenType {
-    Keyword keyword;
-    Symbol symbol;
-    SpecialSymbol specialSymbol;
-} TokenType;
+typedef enum SyntaxType {
+    KEYWORD,
+    SYMBOL,
+    SPECIAL_SYMBOL
+} SyntaxType;
 
-typedef union TokenValue {
-    int64_t signed_integer;
-    uint64_t unsigned_integer;
-    double decimal;
-    const char *string;
-    const char *name;
-    bool boolean;
+typedef enum ValueType {
+    SIGNED_INT,
+    UNSIGNED_INT,
+    DECIMAL,
+    STR,
+    NAME,
+    BOOLEAN
+} ValueType;
+
+typedef struct TokenSyntax {
+    SyntaxType syntaxType;
+    union {
+        Keyword keyword;
+        Symbol symbol;
+        SpecialSymbol specialSymbol;
+    };
+} TokenSyntax;
+
+typedef struct TokenValue {
+    ValueType valueType;
+    union {
+        int64_t signed_integer;
+        uint64_t unsigned_integer;
+        double decimal;
+        const char *string;
+        const char *name;
+        bool boolean;
+    };
+
 } TokenValue;
 
-typedef union Token {
-    TokenType type;
-    TokenValue value;
+typedef enum TokenType {
+    SYNTAX,
+    VALUE
+} TokenType;
+
+typedef struct Token {
+    TokenType tokenType;
+    union {
+        TokenSyntax tokenSyntax;
+        TokenValue tokenValue;
+    };
 } Token;
 
 Token **lexer();

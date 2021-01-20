@@ -41,6 +41,9 @@ typedef enum Number {
 } Number;
 
 Number isNumber(char *word) {
+    if (word == NULL) {
+        return NOT_NUMBER;
+    }
     Number number;
     bool periodSeen = false;
     for (int i = 0; i < strlen(word); i++) {
@@ -123,41 +126,63 @@ Token **lexer() {
                 Number number = isNumber(curWord);
                 token = (Token *)xmalloc(sizeof(Token));
                 if (keyword != NOT_KEYWORD) {
-                    token->type.keyword = keyword;
+                    token->tokenType = SYNTAX;
+                    token->tokenSyntax.syntaxType = KEYWORD;
+                    token->tokenSyntax.keyword = keyword;
                 } else if (symbol != NOT_SYMBOL) {
-                    token->type.symbol = symbol;
+                    token->tokenType = SYNTAX;
+                    token->tokenSyntax.syntaxType = SYMBOL;
+                    token->tokenSyntax.symbol = symbol;
                 } else if (number != NOT_NUMBER) {
                     if (number == INTEGER) {
-                        token->value.unsigned_integer = atoi(curWord);
+                        // TODO implement signed int
+                        token->tokenType = VALUE;
+                        token->tokenValue.valueType = UNSIGNED_INT;
+                        token->tokenValue.unsigned_integer = atoi(curWord);
                     } else { //float
-                        token->value.decimal = atof(curWord);
+                        token->tokenType = VALUE;
+                        token->tokenValue.valueType = DECIMAL;
+                        token->tokenValue.decimal = atof(number);
                     }
                 } else {
                     // if its not a keyword, symbol, or number, it must be a name
-                    token->value.string = curWord;
+                    token->tokenType = VALUE;
+                    token->tokenValue.valueType = NAME;
+                    token->tokenValue.name = curWord;
                 }
                 buf_push(tokens, token);
                 curWord = NULL; // reset curWord
             } else if (specialSymbol != NOT_SPECIAL_SYMBOL) {
                 if (text[line][charIndex] == specialSymbols[QUOTATION] && unmatchedQuotation) {
                     token = (Token *)xmalloc(sizeof(Token));
-                    token->value.string = curWord;
+                    token->tokenType = VALUE;
+                    token->tokenValue.valueType = STR;
+                    token->tokenValue.name = curWord;
                     buf_push(tokens, token);
                     token = (Token *)xmalloc(sizeof(Token));
-                    token->type.specialSymbol = QUOTATION;
+                    token->tokenType = SYNTAX;
+                    token->tokenSyntax.syntaxType = SPECIAL_SYMBOL;
+                    token->tokenSyntax.specialSymbol = QUOTATION;
                     buf_push(tokens, token);
                     unmatchedQuotation = false;
                 } else if (text[line][charIndex] == specialSymbols[QUOTATION] && !unmatchedQuotation) {
                     token = (Token *)xmalloc(sizeof(Token));
-                    token->type.specialSymbol = QUOTATION;
+                    token->tokenType = SYNTAX;
+                    token->tokenSyntax.syntaxType = SPECIAL_SYMBOL;
+                    token->tokenSyntax.specialSymbol = QUOTATION;
                     buf_push(tokens, token);
                     unmatchedQuotation = true;
                 } else {
                     token = (Token *)xmalloc(sizeof(Token));
-                    token->value.string = curWord;
+                    // TODO make push things other than strings
+                    token->tokenType = VALUE;
+                    token->tokenValue.valueType = STR;
+                    token->tokenValue.string = curWord;
                     buf_push(tokens, token);
                     token = (Token *)xmalloc(sizeof(Token));
-                    token->type.specialSymbol = specialSymbol;
+                    token->tokenType = SYNTAX;
+                    token->tokenSyntax.syntaxType = SPECIAL_SYMBOL;
+                    token->tokenSyntax.specialSymbol = specialSymbol;
                     buf_push(tokens, token);
                 }
                 curWord = NULL;
