@@ -239,7 +239,8 @@ typedef struct TokenValue {
 
 typedef enum TokenType {
     SYNTAX,
-    VALUE
+    VALUE,
+    NO_TYPE
 } TokenType;
 
 typedef struct Token {

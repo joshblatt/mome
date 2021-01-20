@@ -101,9 +101,9 @@ SpecialSymbol isSpecialSymbol(char c) {
     return NOT_SPECIAL_SYMBOL;
 }
 
-Token **lexer() {
+Token **lexer(char *filePath) {
     char **text = NULL;
-    char *dir = createFullDirFromRoot("/tests/src/test_lexer_contents/basic_lexer.txt");
+    char *dir = createFullDirFromRoot(filePath);
     text = readFile(dir, text);
 
     Token **tokens = NULL;
