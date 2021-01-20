@@ -68,17 +68,33 @@ bool tokensMatch(Token token1, Token token2) {
 }
 
 void test_basic_file() {
-    Token **lexerTokens = lexer("/tests/src/test_lexer_contents/basic_lexer.txt");
+    Token **lexerTokens = lexer("/tests/src/test_lexer_contents/basic_file.txt");
     Token *correctTokens= NULL;
     Token token;
     token.tokenType = SYNTAX;
     token.tokenSyntax.syntaxType = KEYWORD;
     token.tokenSyntax.keyword = VAR;
     buf_push(correctTokens, token);
-    assert(lexerTokens[0]->tokenType == correctTokens[0].tokenType);
-//    for (int i = 0; i < buf_len(tokens); i++) {
-//
-//    }
+    token.tokenType = VALUE;
+    token.tokenValue.valueType = NAME;
+    token.tokenValue.name = "x";
+    buf_push(correctTokens, token);
+    token.tokenType = SYNTAX;
+    token.tokenSyntax.syntaxType = SYMBOL;
+    token.tokenSyntax.symbol = EQUAL;
+    buf_push(correctTokens, token);
+    token.tokenType = VALUE;
+    token.tokenValue.valueType = UNSIGNED_INT;
+    token.tokenValue.unsigned_integer = 0;
+    buf_push(correctTokens, token);
+    token.tokenType = SYNTAX;
+    token.tokenSyntax.syntaxType = SPECIAL_SYMBOL;
+    token.tokenSyntax.specialSymbol = SEMI_COLON;
+    buf_push(correctTokens, token);
+
+    for (int i = 0; i < buf_len(correctTokens); i++) {
+        assert(tokensMatch(correctTokens[i], *lexerTokens[i]));
+    }
 }
 
 void test_lexer() {

@@ -9,6 +9,6 @@
 
 int main(int argc, const char *argv[]) {
     runUnitTests();
-    lexer();
+    lexer("/tests/src/test_lexer_contents/basic_file.txt");
     return 0;
 }
