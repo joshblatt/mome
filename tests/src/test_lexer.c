@@ -97,6 +97,16 @@ void test_basic_file() {
     }
 }
 
+void test_for_loop (){
+    Token **lexerTokens = lexer("/tests/src/test_lexer_contents/for_loop.txt");
+    Token *correctTokens= NULL;
+    Token token;
+
+    for (int i = 0; i < buf_len(correctTokens); i++) {
+        assert(tokensMatch(correctTokens[i], *lexerTokens[i]));
+    }
+}
+
 void test_lexer() {
     test_basic_file();
 }
